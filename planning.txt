@@ -1,5 +1,0 @@
-Steps:
-1. Create list of line caps
-2. Rotate those lines about x axis
-3. Create mesh from the vertices
-4. Output to .obj file
