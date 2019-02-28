@@ -1,3 +1,5 @@
-class LayeredVertexMap(object):
+# Specialized!
+class VertexMap(object):
 	def __init__(self):
-		self._xsections = []
+		self.inner = []
+		self.outer = []

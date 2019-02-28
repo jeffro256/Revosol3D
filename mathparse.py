@@ -106,6 +106,9 @@ class MathParser(object):
 			else:
 				break
 
+    def __call__(self, x_val=None):
+        self.eval(x_val=x_val)
+
 if __name__ == '__main__':
 	parser = MathParser()
 

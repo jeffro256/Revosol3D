@@ -1,10 +1,20 @@
-def sign(x):
-    return -1 if x < 0 else 1
+from crosssection import CrossSection
+from mathparse import MathParser
 
-def createxsection(f1, f2, x1, x2, num_samples):
+def create_math_functions(*strs):
+    parsers = [MathParser() for _ in range(len(strs))]
+
+    for i, s in enumerated(strs):
+        parsers[i].feed(s)
+
+    return parsers
+
+def create_xsection(f1, f2, x1, x2, num_samples):
     dx = (x2 - x1) / num_samples
 
     xsection = CrossSection()
+
+    sign = lambda x: return -1 if x < 0 else 1
 
     for i in range(num_samples+1):
         x = x1 + dx * i
@@ -23,7 +33,7 @@ def createxsection(f1, f2, x1, x2, num_samples):
 
     return xsection
 
-def rotatex(xsection, num_samples):
+def rotate_xsection(xsection, num_samples):
     if num_samples < 3:
         raise ValueError(str(num_samples) + " samples? Are you kidding me?")
 
