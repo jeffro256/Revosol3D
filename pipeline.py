@@ -4,7 +4,7 @@ from mathparse import MathParser
 def create_math_functions(*strs):
     parsers = [MathParser() for _ in range(len(strs))]
 
-    for i, s in enumerated(strs):
+    for i, s in enumerate(strs):
         parsers[i].feed(s)
 
     return parsers
@@ -12,9 +12,9 @@ def create_math_functions(*strs):
 def create_xsection(f1, f2, x1, x2, num_samples):
     dx = (x2 - x1) / num_samples
 
-    xsection = CrossSection()
+    xsection = CrossSection(x1, x2)
 
-    sign = lambda x: return -1 if x < 0 else 1
+    sign = lambda x: (x > 0) - (x < 0)
 
     for i in range(num_samples+1):
         x = x1 + dx * i

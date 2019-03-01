@@ -53,6 +53,15 @@ class Vector2D(object):
 	def data_str(self):
 		return "{}\t{}".format(self.x, self.y)
 
+	def withx(self, x):
+		return Vector3D(x, self.x, self.y)
+
+	def withy(self, y):
+		return Vector3D(self.x, y, self.y)
+
+	def withz(self, z):
+		return Vector3D(self.x, self.y, z)
+
 class Vector3D(object):
 	def __init__(self, x, y, z):
 		self.x = x

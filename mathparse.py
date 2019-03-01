@@ -70,7 +70,7 @@ class MathParser(object):
 		return res
 
 	def eval(self, x_val=None, stack=None):
-		if stack == None:
+		if stack is None:
 			stack = self._exprStack[:]
 
 		op = stack.pop()
@@ -90,7 +90,7 @@ class MathParser(object):
 			else:
 				return x_val
 		elif op in self.funcs:
-			return self.funcs[op](self.eval(var_val, stack))
+			return self.funcs[op](self.eval(x_val, stack))
 		elif op[0].isalpha():
 			raise Exception("invalid identifier '%s'" % op)
 		else:
@@ -106,8 +106,8 @@ class MathParser(object):
 			else:
 				break
 
-    def __call__(self, x_val=None):
-        self.eval(x_val=x_val)
+	def __call__(self, x_val=None):
+		self.eval(x_val=x_val)
 
 if __name__ == '__main__':
 	parser = MathParser()
