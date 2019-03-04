@@ -1,14 +1,20 @@
 from bisect import bisect_left
+from math import *
 
 from geometry import *
 from mathparse import MathParser
+from pyparsing import ParseException
 from vmap import VertexMap, VertexRing
 
 def create_math_functions(*strs):
 	parsers = [MathParser() for _ in range(len(strs))]
 
 	for i, s in enumerate(strs):
-		parsers[i].feed(s)
+		try:
+			parsers[i].feed(s)
+		except ParseException as pe:
+			print("Bad string: ", s)
+			raise pe
 
 	return parsers
 
@@ -34,6 +40,30 @@ def create_xsection(f1, f2, x1, x2, num_samples):
 		xsection.append((x, (inner, outer)))
 
 	return xsection
+
+def get_volume_from_xsection(xsection):
+	vol_sum = 0
+
+	for i in range(len(xsection) - 1):
+		this_samp = xsection[i]
+		next_samp = xsection[i+1]
+
+		dx = next_samp[0] - this_samp[0]
+		y1 = this_samp[1][1]
+		y2 = next_samp[1][1]
+		y3 = this_samp[1][0]
+		y4 = next_samp[1][0]
+
+		#dy1 = y2 - y1
+		#dy2 = y4 - y3
+
+		#slice_vol = pi * dx * (dy1**2 / 3 - dy2**2 / 3 + y1 * dy1 - y3 * dy2 + y1**2 - y3**2)
+		slice_vol = pi * dx / 3 * (y1 ** 2 + y2 ** 2 - y3 ** 2 - y4 ** 2 + y1*y2 + y3*y4)
+		# slice_vol = pi * dx * y1**2 - y3**2
+
+		vol_sum += slice_vol
+
+	return vol_sum
 
 def rotate_xsection(xsection, num_samples):
 	if num_samples < 3:
