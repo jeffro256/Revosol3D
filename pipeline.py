@@ -138,13 +138,11 @@ def get_triangles_from_vmap(vertex_map):
 		v4 = left_iring[i-1]
 
 		t1 = Triangle(v1, v2, v3)
-		#t2 = Triangle(v2, v3, v4)
-		t2 = Triangle(v4, v3, v2)
+		triangles.append(t1)
 
-		if left_iring.radius != 0:
-			triangles.extend((t1, t2))
-		else:
-			triangles.append(t1)
+		if v1 != v4:
+			t2 = Triangle(v1, v3, v4)
+			triangles.append(t2)
 
 	# right cap
 	right_iring = vertex_map.inner[-1]
@@ -156,50 +154,106 @@ def get_triangles_from_vmap(vertex_map):
 		v4 = right_iring[i+1]
 
 		t1 = Triangle(v1, v2, v3)
-		#t2 = Triangle(v2, v3, v4)
-		t2 = Triangle(v4, v3, v2)
+		triangles.append(t1)
 
-		if right_iring.radius != 0:
-			triangles.extend((t1, t2))
-		else:
-			triangles.append(t1)
+		if v1 != v4:
+			t2 = Triangle(v1, v3, v4)
+			triangles.append(t2)
+
+	#flag
+	#triangles.append(Triangle(Vector3D(0, 2, 0), Vector3D(1, 3, 0), Vector3D(0, 4, 0)))
 
 	return triangles
+"""
+def write_mesh(f, triangles, showProgress=False):
+	vertices = []
+	faces = []
 
-def write_mesh(f, triangles):
-	vertices = set()
+	l = len(triangles)
+	for i, triangle in enumerate(triangles):
+		if i % 10 == 0:
+			print("Creating mesh: {}%".format(round(i / l * 1000) / 10), end="\r", flush=True)
 
-	for triangle in triangles:
-		vertices.update((triangle.p1, triangle.p2, triangle.p3))
+		p1index = None
+		p2index = None
+		p3index = None
 
-	print("m1")
+		for i, vertex in enumerate(vertices):
+			if vertex == triangle.p1:
+				p1index = i
+			elif vertex == triangle.p2:
+				p2index = i
+			elif vertex == triangle.p3:
+				p3index = i
 
-	#vertices = sorted(list(vertices))
-	vertices = list(vertices)
+			if p1index != None and p2index != None and p3index != None:
+				break
+
+		if p1index is None:
+			p1index = len(vertices)
+			vertices.append(triangle.p1)
+
+		if p2index is None:
+			p2index = len(vertices)
+			vertices.append(triangle.p2)
+
+		if p3index is None:
+			p3index = len(vertices)
+			vertices.append(triangle.p3)
+
+		faces.append((p1index, p2index, p3index))
 
 	for vertex in vertices:
 		f.write("v {} {} {}\n".format(vertex.x, vertex.y, vertex.z))
 
-	print("m2")
+	for face in faces:
+		f.write("f {} {} {}\n".format(*face))
+
+	f.close()
+"""
+
+def write_mesh(f, triangles, showProgress=False):
+	vertices = {}
+	vert_index = 1
+
+	faces = []
 
 	l = len(triangles)
 	for i, triangle in enumerate(triangles):
-		print("{}%".format(i / l * 100))
+		if i % 10 == 0:
+			print("Creating mesh: {}%    ".format(int(i / l * 1000) / 10), end="\r", flush=True)
 
-		vert_index1 = vertices.index(triangle.p1) + 1
-		vert_index2 = vertices.index(triangle.p2) + 1
-		vert_index3 = vertices.index(triangle.p3) + 1
+		p1 = triangle.p1
+		p2 = triangle.p2
+		p3 = triangle.p3
 
-		f.write("f {} {} {}\n".format(vert_index1, vert_index2, vert_index3))
+		try:
+			p1index = vertices[p1]
+		except KeyError:
+			vertices[p1] = p1index = vert_index
+			vert_index += 1
 
-	print("m3")
+		try:
+			p2index = vertices[p2]
+		except KeyError:
+			vertices[p2] = p2index = vert_index
+			vert_index += 1
+
+		try:
+			p3index = vertices[p3]
+		except KeyError:
+			vertices[p3] = p3index = vert_index
+			vert_index += 1
+
+		faces.append((p1index, p2index, p3index))
+
+	vertices = [y[1] for y in sorted([(vertices[x], x) for x in vertices])]
+
+	for vertex in vertices:
+		f.write("v {} {} {}\n".format(vertex.x, vertex.y, vertex.z))
+
+	for face in faces:
+		f.write("f {} {} {}\n".format(*face))
 
 	f.close()
-
-
-
-
-
-
-
 
