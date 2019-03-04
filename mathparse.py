@@ -75,10 +75,10 @@ class MathParser(object):
 
 		op = stack.pop()
 		if op == 'unary -':
-			return -self.eval(var_val, stack)
+			return -self.eval(x_val, stack)
 		if op in self.ops:
-			op2 = self.eval(var_val, stack)
-			op1 = self.eval(var_val, stack)
+			op2 = self.eval(x_val, stack)
+			op1 = self.eval(x_val, stack)
 			return self.ops[op](op1, op2)
 		elif op == 'PI':
 			return math.pi 
@@ -107,7 +107,7 @@ class MathParser(object):
 				break
 
 	def __call__(self, x_val=None):
-		self.eval(x_val=x_val)
+		return self.eval(x_val=x_val)
 
 if __name__ == '__main__':
 	parser = MathParser()
