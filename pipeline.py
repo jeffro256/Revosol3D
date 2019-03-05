@@ -65,6 +65,26 @@ def get_volume_from_xsection(xsection):
 
 	return vol_sum
 
+def remove_holes_from_xsection(xsection, epsilon=None):
+	if epsilon is None:
+		epsilon = max([x[1][1] for x in xsection]) / 1000
+
+	is_small_list = [s[1][0] <= epsilon for s in xsection]
+
+	if is_small_list.count(True) >= 2:
+		first_small = is_small_list.index(True)
+		last_small = len(xsection) - list(reversed(is_small_list)).index(True) - 1
+
+		new_xsection = []
+
+		new_xsection.extend(xsection[:first_small])
+		new_xsection.extend([(s[0], (0.0, s[1][1])) for s in xsection[first_small:last_small+1]])
+		new_xsection.extend(xsection[last_small+1:])
+
+		return (new_xsection, epsilon)
+	else:
+		return (xsection, epsilon)
+
 def rotate_xsection(xsection, num_samples):
 	if num_samples < 3:
 		raise ValueError(str(num_samples) + " samples? Are you kidding me?")

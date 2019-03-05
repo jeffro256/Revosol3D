@@ -20,15 +20,24 @@ class MathParser(object):
 		}
 
 		self.funcs = {
-			'sin'   : math.sin,
-			'cos'   : math.cos,
-			'tan'   : math.tan,
-			'exp'   : math.exp,
-			'ln'    : math.log,
-			'log'   : math.log10,
-			'abs'   : abs,
-			'floor' : int,
-			'round' : round
+			'sin'    : math.sin,
+			'cos'    : math.cos,
+			'tan'    : math.tan,
+			'csc'    : lambda x: 1 / math.sin(x),
+			'sec'    : lambda x: 1 / math.cos(x),
+			'cot'    : lambda x: 1 / math.tan(x),
+			'arcsin' : math.asin,
+			'acccos' : math.acos,
+			'arctan' : math.atan,
+			'arccsc' : lambda x: math.asin(1 / x),
+			'arcsec' : lambda x: math.acos(1 / x),
+			'arccot' : lambda x: math.atan(1 / x) + (x < 0) * math.pi,
+			'ln'     : math.log,
+			'log'    : math.log10,
+			'abs'    : abs,
+			'floor'  : int,
+			'round'  : round
+
 		}
 
 		self.setup()

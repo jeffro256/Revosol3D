@@ -2,4 +2,4 @@
 *.obj
 
 _test.py
-usr_in.txt
+Formulas/*

@@ -15,8 +15,6 @@ if __name__ == '__main__':
 	f = open(fullfname, 'w')
 	print()
 
-	print(Path.home())
-
 	a = 10
 	b = 1.5
 	c = 3
@@ -35,6 +33,12 @@ if __name__ == '__main__':
 	volume = pipeline.get_volume_from_xsection(xsection)
 
 	print("Volume:", volume)
+
+	xsection, epsilon = pipeline.remove_holes_from_xsection(xsection)
+
+	epsilon_str = "%.4f" % epsilon
+
+	print("Removed holes from cross section. Epsilon:", epsilon_str)
 
 	vertmap = pipeline.rotate_xsection(xsection, thetan)
 
