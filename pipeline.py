@@ -132,25 +132,22 @@ def get_triangles_from_vmap(vertex_map):
 			v3 = next_ring[j]
 			v4 = next_ring[j-1]
 
-			try:
+			t1 = t2 = None
+
+			if v1 != v2:
 				t1 = Triangle(v1, v2, v3)
 
-				triangles.append(t1)
-			except:
-				pass
-			
-			try:
-				#t2 = Triangle(v2, v3, v4)
+			if v3 != v4:
 				t2 = Triangle(v4, v3, v2)
+			
+			if t1 is None and t2 is None:
+				print("Warning, no inner triangles made b/t {} & {}".format(this_ring.x, next_ring.x))
 
-				triangles.append(t2)
-			except:
-				pass ################################################# FIIIIIIXXXXX
-
-			if not t1.normal_equals(t2): # To catch when one ring's radius is 0
-				triangles.extend((t1, t2))
-			else:
+			if t1:
 				triangles.append(t1)
+
+			if t2:
+				triangles.append(t2)
 
 	# outer
 	for i in range(num_rings - 1):
@@ -163,20 +160,22 @@ def get_triangles_from_vmap(vertex_map):
 			v3 = next_ring[j]
 			v4 = next_ring[j+1]
 
-			try:
+			t1 = t2 = None
+
+			if v1 != v2:
 				t1 = Triangle(v1, v2, v3)
 
-				triangles.append(t1)
-			except:
-				pass
-			
-			try:
-				#t2 = Triangle(v2, v3, v4)
+			if v3 != v4:
 				t2 = Triangle(v4, v3, v2)
+			
+			if t1 is None and t2 is None:
+				print("Warning, no outer triangles made b/t {} & {}".format(this_ring.x, next_ring.x))
 
+			if t1:
+				triangles.append(t1)
+
+			if t2:
 				triangles.append(t2)
-			except:
-				pass ################################################# FIIIIIIXXXXX
 
 	# left cap
 	left_iring = vertex_map.inner[0]
@@ -214,53 +213,6 @@ def get_triangles_from_vmap(vertex_map):
 	#triangles.append(Triangle(Vector3D(0, 2, 0), Vector3D(1, 3, 0), Vector3D(0, 4, 0)))
 
 	return triangles
-"""
-def write_mesh(f, triangles, showProgress=False):
-	vertices = []
-	faces = []
-
-	l = len(triangles)
-	for i, triangle in enumerate(triangles):
-		if i % 10 == 0:
-			print("Creating mesh: {}%".format(round(i / l * 1000) / 10), end="\r", flush=True)
-
-		p1index = None
-		p2index = None
-		p3index = None
-
-		for i, vertex in enumerate(vertices):
-			if vertex == triangle.p1:
-				p1index = i
-			elif vertex == triangle.p2:
-				p2index = i
-			elif vertex == triangle.p3:
-				p3index = i
-
-			if p1index != None and p2index != None and p3index != None:
-				break
-
-		if p1index is None:
-			p1index = len(vertices)
-			vertices.append(triangle.p1)
-
-		if p2index is None:
-			p2index = len(vertices)
-			vertices.append(triangle.p2)
-
-		if p3index is None:
-			p3index = len(vertices)
-			vertices.append(triangle.p3)
-
-		faces.append((p1index, p2index, p3index))
-
-	for vertex in vertices:
-		f.write("v {} {} {}\n".format(vertex.x, vertex.y, vertex.z))
-
-	for face in faces:
-		f.write("f {} {} {}\n".format(*face))
-
-	f.close()
-"""
 
 def write_mesh(f, triangles, showProgress=False):
 	vertices = {}

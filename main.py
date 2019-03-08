@@ -1,15 +1,17 @@
 #!/usr/local/bin/python3
 
 from pathlib import Path
+from mathparse import MathParser
 
 import pipeline
 
-if __name__ == '__main__':
-	f1str = input("f(x) = ")
-	f2str = input("g(x) = ")
-	x1str = input("x1 = ")
-	x2str = input("x2 = ")
-	qual = float(input("Quality (1-12 recommended): "))
+def main():
+	f1, f2, xparse = MathParser(), MathParser(), MathParser()
+	guaranteed_input("f(x) = ", lambda s: f1.feed(s))
+	guaranteed_input("g(x) = ", lambda s: f2.feed(s))
+	x1 = guaranteed_input("x1 = ", lambda s: (xparse.feed(s), xparse.eval())[-1])
+	x2 = guaranteed_input("x2 = ", lambda s: (xparse.feed(s), xparse.eval())[-1])
+	qual = guaranteed_input("Quality (5-12 recommended): ", float)
 	fname = input("File name: ")
 	fullfname = str(Path.home()) + "/Documents/" + fname
 	f = open(fullfname, 'w')
@@ -23,16 +25,14 @@ if __name__ == '__main__':
 
 	print("x samples: {}, θ samples: {}".format(xn, thetan))
 
-	f1, f2, x1, x2 = pipeline.create_math_functions(f1str, f2str, x1str, x2str)
-	x1, x2 = x1.eval(), x2.eval()
-
 	xsection = pipeline.create_xsection(f1, f2, x1, x2, xn)
 
 	print("Created cross section.")
 
 	volume = pipeline.get_volume_from_xsection(xsection)
+	vol_str = "%.2f" % volume
 
-	print("Volume:", volume)
+	print("Volume:", vol_str)
 
 	xsection, epsilon = pipeline.remove_holes_from_xsection(xsection)
 
@@ -53,3 +53,19 @@ if __name__ == '__main__':
 	print("Wrote mesh to file {}.".format(fullfname))
 
 	input("Done. Press Enter to Quit.\n")
+
+def guaranteed_input(prompt, func, err_handler=None):
+	while True:
+		in_str = input(prompt)
+
+		try:
+			return func(in_str)
+		except Exception as e:
+			if err_handler:
+				err_handler(in_str, e)
+			else:
+				print("Sorry, that couldn't be parsed.")
+				print("Try again")
+
+if __name__ == '__main__':
+	main()
