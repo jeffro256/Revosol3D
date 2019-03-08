@@ -8,8 +8,8 @@ import pipeline
 def main():
 	f1, f2, xparse = MathParser(), MathParser(), MathParser()
 	# 2.1 is a random num I thought of
-	guaranteed_input("f(x) = ", lambda s: (f1.feed(s), f1.eval(2.1))
-	guaranteed_input("g(x) = ", lambda s: (f2.feed(s), f2.eval(2.1))
+	guaranteed_input("f(x) = ", lambda s: (f1.feed(s), f1.eval(2.1)))
+	guaranteed_input("g(x) = ", lambda s: (f2.feed(s), f2.eval(2.1)))
 	x1 = guaranteed_input("x1 = ", lambda s: (xparse.feed(s), xparse.eval())[-1])
 	x2 = guaranteed_input("x2 = ", lambda s: (xparse.feed(s), xparse.eval())[-1])
 	qual = guaranteed_input("Quality (5-12 recommended): ", float)
