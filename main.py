@@ -1,8 +1,9 @@
 #!/usr/local/bin/python3
 
+from datetime import datetime
 from pathlib import Path
-from mathparse import MathParser
 
+from mathparse import MathParser
 import pipeline
 
 def main():
@@ -49,7 +50,19 @@ def main():
 
 	print("Created {} triangles.".format(len(triangles)))
 
-	pipeline.write_mesh(f, triangles, showProgress=True)
+	metadata = {
+		'Date Created'   : datetime.now().isoformat(),
+		'Function 1'     : f1.parse_string(),
+		'Function 2'     : f2.parse_string(),
+		'Left Bound'     : x1,
+		'Right Bound'    : x2,
+		'x samples'      : xn,
+		'theta samples'  : thetan,
+		'# of triangles' : len(triangles),
+		'Volume'         : volume
+	}
+
+	pipeline.write_mesh(f, triangles, metadata=metadata, showProgress=True)
 
 	print("Wrote mesh to file {}.".format(fullfname))
 

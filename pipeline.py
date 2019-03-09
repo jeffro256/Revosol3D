@@ -214,7 +214,7 @@ def get_triangles_from_vmap(vertex_map):
 
 	return triangles
 
-def write_mesh(f, triangles, showProgress=False):
+def write_mesh(f, triangles, metadata={}, showProgress=False):
 	vertices = {}
 	vert_index = 1
 
@@ -251,11 +251,28 @@ def write_mesh(f, triangles, showProgress=False):
 
 	vertices = [y[1] for y in sorted([(vertices[x], x) for x in vertices])]
 
+	f.write("# Jeffrey Ryan greets you from early 2019!\n")
+	f.write("# This file was created by Revosol3D :)\n\n")
+
+	if metadata:
+		f.write("# Metadata:\n")
+
+		for key in metadata:
+			f.write("#     {}: {}\n".format(key, metadata[key]))
+	else:
+		f.write("# No Metadata :(\n")
+
+	f.write("\n\n\n\n\n# Okay, let's get to business!\n\n")
+
+	f.write("\n# VERTICES\n")
 	for vertex in vertices:
 		f.write("v {} {} {}\n".format(vertex.x, vertex.y, vertex.z))
 
+	f.write("\n# FACES\n")
 	for face in faces:
 		f.write("f {} {} {}\n".format(*face))
+
+	f.write("\n# Goodbye ;)\n")
 
 	f.close()
 

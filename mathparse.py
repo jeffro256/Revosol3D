@@ -76,6 +76,8 @@ class MathParser(object):
 		self._exprStack.clear()
 		res = self._parseExpr.parseString(s, parseAll=True)
 
+		self._parseStr = s
+
 		return res
 
 	def eval(self, x_val=None, stack=None):
@@ -104,6 +106,9 @@ class MathParser(object):
 			raise Exception("invalid identifier '%s'" % op)
 		else:
 			return float(op)
+
+	def parse_string(self):
+		return self._parseStr
 
 	def _pushFirst(self, strg, loc, toks):
 		self._exprStack.append(toks[0])
