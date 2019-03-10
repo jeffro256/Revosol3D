@@ -6,6 +6,9 @@ from pathlib import Path
 from mathparse import MathParser
 import pipeline
 
+version = (1, 1, 2)
+ver_str = "{}.{}.{}".format(*version)
+
 def main():
 	f1, f2, xparse = MathParser(), MathParser(), MathParser()
 	# 2.1 is a random num I thought of
@@ -51,15 +54,18 @@ def main():
 	print("Created {} triangles.".format(len(triangles)))
 
 	metadata = {
-		'Date Created'   : datetime.now().isoformat(),
-		'Function 1'     : f1.parse_string(),
-		'Function 2'     : f2.parse_string(),
-		'Left Bound'     : x1,
-		'Right Bound'    : x2,
-		'x samples'      : xn,
-		'theta samples'  : thetan,
-		'# of triangles' : len(triangles),
-		'Volume'         : volume
+		'Date Created'        : datetime.now().isoformat(),
+		'Revosol3D Version'   : ver_str,
+		'Function 1'          : f1.parse_string(),
+		'Function 2'          : f2.parse_string(),
+		'Left Bound'          : x1,
+		'Right Bound'         : x2,
+		'# of x samples'      : xn,
+		'# of theta samples'  : thetan,
+		'# of triangles'      : len(triangles),
+		'Volume'              : volume,
+		'Quality coefficient' : qual,
+		'Original save path'  : fullfname
 	}
 
 	pipeline.write_mesh(f, triangles, metadata=metadata, showProgress=True)

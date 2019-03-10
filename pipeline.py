@@ -19,23 +19,31 @@ def create_math_functions(*strs):
 	return parsers
 
 def create_xsection(f1, f2, x1, x2, num_samples):
+	epsilon = 1e-12
+	sign = lambda x: (x > epsilon) - (x < epsilon)
+
+	if x1 > x2:
+		x1, x2 = x2, x1
+
+	begin_x = -(x2 - x1) / 2 
 	dx = (x2 - x1) / num_samples
 
 	xsection = []
 
-	sign = lambda x: (x > 0) - (x < 0)
-
 	for i in range(num_samples + 1):
-		x = x1 + dx * i
+		x = begin_x + dx * i
 
 		y1 = f1(x)
 		y2 = f2(x)
 
 		if sign(y1) != sign(y2):
 			inner = 0
-			outer = max(abs(y1), abs(y2))
+			outer = max((abs(y1), abs(y2)))
 		else:
 			inner, outer = sorted((abs(y1), abs(y2)))
+
+		inner = inner if inner > epsilon else 0.0
+		outer = outer if outer > epsilon else 0.0
 
 		xsection.append((x, (inner, outer)))
 
@@ -180,34 +188,38 @@ def get_triangles_from_vmap(vertex_map):
 	# left cap
 	left_iring = vertex_map.inner[0]
 	left_oring = vertex_map.outer[0]
-	for i in range(num_ring_pts):
-		v1 = left_iring[i]
-		v2 = left_oring[i]
-		v3 = left_oring[i-1]
-		v4 = left_iring[i-1]
 
-		t1 = Triangle(v1, v2, v3)
-		triangles.append(t1)
+	if left_iring.radius != left_oring.radius:
+		for i in range(num_ring_pts):
+			v1 = left_iring[i]
+			v2 = left_oring[i]
+			v3 = left_oring[i-1]
+			v4 = left_iring[i-1]
 
-		if v1 != v4:
-			t2 = Triangle(v1, v3, v4)
-			triangles.append(t2)
+			t1 = Triangle(v1, v2, v3)
+			triangles.append(t1)
+
+			if left_iring.radius != 0:
+				t2 = Triangle(v1, v3, v4)
+				triangles.append(t2)
 
 	# right cap
 	right_iring = vertex_map.inner[-1]
 	right_oring = vertex_map.outer[-1]
-	for i in range(-num_ring_pts, 0):
-		v1 = right_iring[i]
-		v2 = right_oring[i]
-		v3 = right_oring[i+1]
-		v4 = right_iring[i+1]
 
-		t1 = Triangle(v1, v2, v3)
-		triangles.append(t1)
+	if right_iring.radius != right_oring.radius:
+		for i in range(-num_ring_pts, 0):
+			v1 = right_iring[i]
+			v2 = right_oring[i]
+			v3 = right_oring[i+1]
+			v4 = right_iring[i+1]
 
-		if v1 != v4:
-			t2 = Triangle(v1, v3, v4)
-			triangles.append(t2)
+			t1 = Triangle(v1, v2, v3)
+			triangles.append(t1)
+
+			if right_iring.radius != 0:
+				#t2 = Triangle(v1, v3, v4)
+				triangles.append(t2)
 
 	#flag
 	#triangles.append(Triangle(Vector3D(0, 2, 0), Vector3D(1, 3, 0), Vector3D(0, 4, 0)))
