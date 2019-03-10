@@ -78,6 +78,10 @@ class MathParser(object):
 
 		self._parseStr = s
 
+		for op in self._exprStack:
+			if op.isalpha() and op not in self.funcs and op not in ('PI', 'E', 'X'):
+				raise Exception("invalid identifier '%s'" % op)
+
 		return res
 
 	def eval(self, x_val=None, stack=None):

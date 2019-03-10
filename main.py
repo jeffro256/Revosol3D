@@ -11,15 +11,13 @@ ver_str = "{}.{}.{}".format(*version)
 
 def main():
 	f1, f2, xparse = MathParser(), MathParser(), MathParser()
-	# 2.1 is a random num I thought of
-	guaranteed_input("f(x) = ", lambda s: (f1.feed(s), f1.eval(2.1)))
-	guaranteed_input("g(x) = ", lambda s: (f2.feed(s), f2.eval(2.1)))
+	guaranteed_input("f(x) = ", f1.feed)
+	guaranteed_input("g(x) = ", f2.feed)
 	x1 = guaranteed_input("x1 = ", lambda s: (xparse.feed(s), xparse.eval())[-1])
 	x2 = guaranteed_input("x2 = ", lambda s: (xparse.feed(s), xparse.eval())[-1])
 	qual = guaranteed_input("Quality (5-12 recommended): ", float)
 	fname = input("File name: ")
 	fullfname = str(Path.home()) + "/Documents/" + fname
-	f = open(fullfname, 'w')
 	print()
 
 	a = 10
@@ -68,24 +66,24 @@ def main():
 		'Original save path'  : fullfname
 	}
 
+	f = open(fullfname, 'w')
 	pipeline.write_mesh(f, triangles, metadata=metadata, showProgress=True)
 
 	print("Wrote mesh to file {}.".format(fullfname))
 
 	input("Done. Press Enter to Quit.\n")
 
-def guaranteed_input(prompt, func, err_handler=None):
+def guaranteed_input(prompt, func):
 	while True:
 		in_str = input(prompt)
+
+		if not in_str:
+			exit()
 
 		try:
 			return func(in_str)
 		except Exception as e:
-			if err_handler:
-				err_handler(in_str, e)
-			else:
-				print("Sorry, that couldn't be parsed.")
-				print("Try again")
+			print("Sorry, that couldn't be parsed. Try again")
 
 if __name__ == '__main__':
 	main()
