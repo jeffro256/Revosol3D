@@ -25,13 +25,13 @@ def create_xsection(f1, f2, x1, x2, num_samples):
 	if x1 > x2:
 		x1, x2 = x2, x1
 
-	begin_x = -(x2 - x1) / 2 
 	dx = (x2 - x1) / num_samples
+	x_shift = -x1 + (x2 - x1) / 2
 
 	xsection = []
 
 	for i in range(num_samples + 1):
-		x = begin_x + dx * i
+		x = x1 + dx * i
 
 		y1 = f1(x)
 		y2 = f2(x)
@@ -45,7 +45,7 @@ def create_xsection(f1, f2, x1, x2, num_samples):
 		inner = inner if inner > epsilon else 0.0
 		outer = outer if outer > epsilon else 0.0
 
-		xsection.append((x, (inner, outer)))
+		xsection.append((x + x_shift, (inner, outer)))
 
 	return xsection
 
@@ -218,7 +218,7 @@ def get_triangles_from_vmap(vertex_map):
 			triangles.append(t1)
 
 			if right_iring.radius != 0:
-				#t2 = Triangle(v1, v3, v4)
+				t2 = Triangle(v1, v3, v4)
 				triangles.append(t2)
 
 	#flag
