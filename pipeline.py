@@ -33,8 +33,13 @@ def create_xsection(f1, f2, x1, x2, num_samples):
 	for i in range(num_samples + 1):
 		x = x1 + dx * i
 
-		y1 = f1(x)
-		y2 = f2(x)
+		try:
+			y1 = f1(x)
+			y2 = f2(x)
+		except ValueError as e:
+			print(e)
+			print("Cannot create cross-section due to the above error.")
+			return None
 
 		if sign(y1) != sign(y2):
 			inner = 0

@@ -31,6 +31,9 @@ def main():
 
 		xsection = pipeline.create_xsection(f1, f2, x1, x2, xn)
 
+		if not xsection:
+			exit()
+
 		print("Created cross section.")
 
 		volume = pipeline.get_volume_from_xsection(xsection)

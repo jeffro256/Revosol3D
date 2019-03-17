@@ -20,6 +20,11 @@ class MathParser(object):
 		}
 
 		self.funcs = {
+			'sqrt'   : math.sqrt,
+			'ln'     : math.log,
+			'log'    : math.log10,
+			'abs'    : abs,
+			'sign'   : lambda x: (x >= 0) - (x < 0),
 			'sin'    : math.sin,
 			'cos'    : math.cos,
 			'tan'    : math.tan,
@@ -32,9 +37,6 @@ class MathParser(object):
 			'arccsc' : lambda x: math.asin(1 / x),
 			'arcsec' : lambda x: math.acos(1 / x),
 			'arccot' : lambda x: math.atan(1 / x) + (x < 0) * math.pi,
-			'ln'     : math.log,
-			'log'    : math.log10,
-			'abs'    : abs,
 			'floor'  : int,
 			'round'  : round
 
@@ -105,7 +107,12 @@ class MathParser(object):
 			else:
 				return x_val
 		elif op in self.funcs:
-			return self.funcs[op](self.eval(x_val, stack))
+			func = self.funcs[op]
+			arg = self.eval(x_val, stack)
+			try:
+				return func(arg)
+			except ValueError:
+				raise ValueError("{}({}) causes a math domain error. x={}".format(op, arg, x_val)) from None
 		elif op[0].isalpha():
 			raise Exception("invalid identifier '%s'" % op)
 		else:

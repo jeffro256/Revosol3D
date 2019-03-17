@@ -164,4 +164,3 @@ class Triangle(object):
 		o3       = (other.p3, other.p1, other.p2)
 
 		return self_tup == o1 or self_tup == o2 or self_tup == o3
-
